@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model DatabaseConnection {
+  id       Int    @id @default(autoincrement())
+  name     String @default("Sem nome")
+  host     String @default("localhost")
+  port     Int    @default(5432)
+  user     String @default("postgres")
+  password String @default("123")
+  database String @unique
+  token    String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  produtoCache ProdutoCache[]
+}
+
+model ProdutoCache {
+  id            Int      @id @default(autoincrement())
+  codigoProprio String
+  codigoEgestor String
+  atualizadoEm  DateTime @default(now())
+
+  databaseId Int
+  database   DatabaseConnection @relation(fields: [databaseId], references: [id])
+
+  @@unique([codigoProprio, databaseId])
+}

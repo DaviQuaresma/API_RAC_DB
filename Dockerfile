@@ -18,5 +18,9 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
 EXPOSE 3001
-CMD ["node", "index.js"]
+
+ENTRYPOINT ["./entrypoint.sh"]

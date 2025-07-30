@@ -1,7 +1,10 @@
 #!/bin/sh
 
-# Executa as migrations antes de iniciar o app
+# Aguarda o banco antes de migrar
+./wait-for.sh postgres 5432
+
+echo "🟡 Executando migrations PostgreSQL..."
 npx prisma migrate deploy
 
-# Inicia o app
+echo "🚀 Subindo app..."
 node index.js

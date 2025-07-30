@@ -5,7 +5,6 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY prisma ./prisma
-
 RUN npm install
 RUN npx prisma generate
 
@@ -18,8 +17,10 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-COPY entrypoint.sh ./
-RUN chmod +x entrypoint.sh
+COPY wait-for.sh .
+COPY entrypoint.sh .
+
+RUN chmod +x wait-for.sh entrypoint.sh
 
 EXPOSE 3001
 

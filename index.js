@@ -12,4 +12,4 @@ app.use("/api/cache", cacheRoutes);
 
 app.get("/health", (_, res) => res.send("✅ API DB online"));
 
-app.listen(3001, () => console.log("🚀 API DB rodando em http://localhost:3001"));
+app.listen(5001, () => console.log("🚀 API DB rodando em http://localhost:5001"));

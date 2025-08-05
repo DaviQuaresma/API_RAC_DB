@@ -3,7 +3,7 @@ version: "3.8"
 services:
   postgres:
     image: bitnami/postgresql:latest
-    container_name: postgres
+    container_name: postgres_db
     environment:
       - POSTGRES_USER=rodrigoAra
       - POSTGRES_PASSWORD=ra123
@@ -19,7 +19,7 @@ services:
     build: .
     container_name: api_rac_db
     ports:
-      - "5001:3001"
+      - "5001:5001"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://rodrigoAra:ra123@postgres:5432/databases

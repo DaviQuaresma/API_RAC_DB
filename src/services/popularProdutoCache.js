@@ -1,15 +1,17 @@
-// src/services/popularProdutoCache.js
 import axios from "axios";
 import prisma from "../../prisma/client.js";
-import { getDatabaseByToken } from "./databaseService.js";
 
 export async function popularProdutoCache(token) {
-    const database = await getDatabaseByToken(token);
-    if (!database) return;
+    const databaseToken = await axios.get("http://localhost:5000/api/validar-token")
+    if (!databaseToken) return;
 
-    const res = await axios.get("http://localhost:3000/api/produtos", {
-        headers: { Authorization: `Bearer ${token}` },
+    console.log("Token de acesso ao banco de dados:", databaseToken);
+
+    const res = await axios.get("http://localhost:5000/api/produtos", {
+        headers: { Authorization: `Bearer ${databaseToken}` },
     });
+
+    console.log("Dados recebidos:", res.data);
 
     const produtos = res.data || [];
 

@@ -7,6 +7,6 @@ router.get("/database", getAll);
 router.get("/database/:database", getUniqueDatabase);
 router.post("/database", create);
 router.put("/database/:id", update);
-router.delete("/database/:id", remove);
+router.delete("/database/:database", remove);
 
 export default router;

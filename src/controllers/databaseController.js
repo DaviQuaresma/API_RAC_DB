@@ -79,16 +79,32 @@ export async function update(req, res) {
 }
 
 export async function remove(req, res) {
-  const { id } = req.params;
+  const { database } = req.params;
+
+  if (!database) {
+    return res.status(400).json({ message: "database parameter is required" });
+  }
+
+  console.log(`Attempting to delete database connection with name: ${database}`);
+
   try {
-    await prisma.databaseConnection.delete({ where: { id: parseInt(id) } });
-    console.log(`Deleted database connection with id: ${id}`);
-    res.status(204).send();
-  } catch (error) {
-    console.error(`Error deleting database connection with id: ${id}`, error);
-    if (error.code === 'P2025') {
+    const existingDatabase = await prisma.databaseConnection.findUnique({
+      where: { database: database }
+    });
+
+    if (!existingDatabase) {
       return res.status(404).json({ message: 'Database connection not found' });
     }
+
+    await prisma.databaseConnection.delete({
+      where: { database: database }
+    });
+
+    console.log(`Successfully deleted database connection with name: ${database}`);
+    res.status(200).json({ message: `Database connection ${database} deleted successfully` });
+
+  } catch (error) {
+    console.error('Error deleting database connection:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 }

@@ -108,3 +108,73 @@ export async function remove(req, res) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+export async function active(req, res) {
+  const { database } = req.params;
+
+  if (!database) {
+    return res.status(400).json({ message: "database parameter is required" });
+  }
+
+  console.log(`Attempting to activate database connection: ${database}`);
+
+  try {
+    const existing = await prisma.databaseConnection.findUnique({
+      where: { database },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ message: "Database connection not found" });
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      // opcional: só quem está ativo
+      const unset = await tx.databaseConnection.updateMany({
+        where: { active: true },
+        data: { active: false },
+      });
+
+      const updated = await tx.databaseConnection.update({
+        where: { database },
+        data: { active: true },
+      });
+
+      return { unsetCount: unset.count, updated };
+    });
+
+    console.log(`Successfully activated database connection: ${database}`);
+
+    return res.status(200).json({
+      message: `Database connection ${database} activated successfully`,
+      unsetCount: result.unsetCount,
+      database: database,
+      updatedId: result.updated.id,
+      active: result.updated.active,
+    });
+  } catch (err) {
+    console.error("Error activating database connection:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+export async function getDatabaseActive(req, res) {
+  try {
+    const existing = await prisma.databaseConnection.findFirst({
+      where: { active: true },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ message: "Database connection not found" });
+    }
+
+    console.log(`Successfully search database`);
+
+    return res.status(200).json({
+      data: existing
+    });
+    
+  } catch (err) {
+    console.error("Error activating database connection:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

@@ -8,14 +8,16 @@ datasource db {
 }
 
 model DatabaseConnection {
-  id       Int    @id @default(autoincrement())
-  name     String @default("Sem nome")
-  host     String @default("localhost")
-  port     Int    @default(5432)
-  user     String @default("postgres")
-  password String @default("123")
-  database String @unique
-  token    String @unique
+  id          Int     @id @default(autoincrement())
+  name        String  @default("Sem nome")
+  host        String  @default("localhost")
+  port        Int     @default(5432)
+  user        String  @default("postgres")
+  password    String  @default("123")
+  database    String  @unique
+  active      Boolean @default(false)
+  token       String  @unique
+  accessToken String  @default("")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
